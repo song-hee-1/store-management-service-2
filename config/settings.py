@@ -49,6 +49,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Local apps
+    'apps.accounts.apps.AccountsConfig',
+    'apps.orders.apps.OrdersConfig',
+
+    # Third party apps
+    'rest_framework',
+
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
