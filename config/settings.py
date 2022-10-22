@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # Local apps
     'apps.accounts.apps.AccountsConfig',
     'apps.orders.apps.OrdersConfig',
+    'apps.products.apps.ProductsConfig',
 
     # Third party apps
     'rest_framework',
