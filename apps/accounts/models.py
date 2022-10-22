@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser는 is_staff = True이어야 합니다.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser는 is_superuser = True이어야 합니다.')
-        return self.create_user(email, username, phone_number, date_of_birth, password, **extra_fields)
+        return self.create_user(username, email, phone_number, date_of_birth, password, **extra_fields)
 
 
 class User(AbstractUser):
