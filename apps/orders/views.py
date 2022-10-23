@@ -1,9 +1,12 @@
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
 from apps.products.models import Product
+
+from django.db.models import Sum
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -61,3 +64,16 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer, total_price=None):
         serializer.save(total_price=total_price)
+
+
+class OrderORMSumView(APIView):
+    def get(self, request):
+        total_sales = Order.objects.filter(order_state="주문완료").aggregate(total_sales=Sum('total_price'))
+        sales_quantity_per_product = Order.objects.filter(order_state="주문완료").values('product_id')\
+            .annotate(sales_quantity_per_product=Sum('product_quantity'))
+        sales_per_product = Order.objects.filter(order_state="주문완료").values('product_id')\
+            .annotate(sales_per_product=Sum('total_price'))
+
+        data = [total_sales, sales_quantity_per_product, sales_per_product]
+
+        return Response(data)
