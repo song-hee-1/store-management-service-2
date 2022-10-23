@@ -15,7 +15,7 @@ class Order(models.Model):
     address = models.CharField(max_length=255, verbose_name="주소")
     receiver_name = models.CharField(max_length=40, verbose_name="수령자이름")
     phoneNumberRegex = RegexValidator(regex=r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
-    receiver_phone_number = models.CharField(validators=[phoneNumberRegex], max_length=13, unique=True,
+    receiver_phone_number = models.CharField(validators=[phoneNumberRegex], max_length=13,
                                              help_text="휴대폰 번호는 다음과 같은 형식을 따라야 합니다: 010-1234-5678")
     order_state = models.CharField(max_length=4, default=1, choices=ORDER_STATE_CHOICES, verbose_name="주문서 상태")
     order_date = models.DateTimeField(auto_now_add=True, verbose_name="주문 날짜")
