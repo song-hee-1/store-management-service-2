@@ -1,8 +1,5 @@
-from django.db.models import Q
-
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.exceptions import APIException
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
@@ -40,13 +37,15 @@ class OrderViewSet(viewsets.ModelViewSet):
         data = serializer.validated_data
 
         product = data['product']
+        product_quantity = data['product_quantity']
 
         total_price = 0
 
         if product:
             try:
                 product_id = product.id
-                total_price = Product.objects.get(id=product_id).price
+                product_price = Product.objects.get(id=product_id).price
+                total_price = product_price * product_quantity
             except Exception as e:
                 response = {'ERROR': f'에러가 발생하였습니다. {e}'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)

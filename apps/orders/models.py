@@ -12,6 +12,7 @@ class Order(models.Model):
                              related_name='order')
     product = models.ForeignKey("products.Product", on_delete=models.CASCADE, db_column='product_id',
                                 related_name='order_product')
+    product_quantity = models.PositiveIntegerField(default=1, verbose_name='상품 주문 수량')
     address = models.CharField(max_length=255, verbose_name="주소")
     receiver_name = models.CharField(max_length=40, verbose_name="수령자이름")
     phoneNumberRegex = RegexValidator(regex=r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
