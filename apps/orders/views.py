@@ -2,13 +2,18 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from apps.orders.models import Order
-from apps.orders.serializers import OrderCreateSerializer
+from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
 from apps.products.models import Product
 
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = OrderCreateSerializer
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return OrderCreateSerializer
+        else:
+            return OrderListSerializer
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
