@@ -2,6 +2,7 @@ from django.db.models import Q
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.exceptions import APIException
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
@@ -12,9 +13,19 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Order.objects.all()
-        q = self.request.GET.get('order_state', '')
-        if q:
-            queryset = queryset.filter(Q(order_state__iexact=q))
+        order_state = self.request.GET.get('order_state', '')
+        start_date = self.request.GET.get('start_date', '')
+        end_date = self.request.GET.get('end_date', '')
+
+        if order_state:
+            queryset = queryset.filter(order_state=order_state)
+
+        if start_date:
+            queryset = queryset.filter(order_date__gte=start_date)
+
+        if end_date:
+            queryset = queryset.filter(order_date__lte=end_date)
+
         return queryset
 
     def get_serializer_class(self):
@@ -37,8 +48,8 @@ class OrderViewSet(viewsets.ModelViewSet):
                 product_id = product.id
                 total_price = Product.objects.get(id=product_id).price
             except Exception as e:
-                message = {'ERROR': f'에러가 발생하였습니다. {e}'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+                response = {'ERROR': f'에러가 발생하였습니다. {e}'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer, total_price)
         headers = self.get_success_headers(serializer.data)
