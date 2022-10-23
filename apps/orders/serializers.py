@@ -8,4 +8,3 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         model = Order
         exclude = ['order_state', 'total_price']
 
-
