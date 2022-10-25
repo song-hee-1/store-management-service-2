@@ -1,12 +1,12 @@
-from django.db.models import Q
-
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import APIException
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
 from apps.products.models import Product
+
+from django.db.models import Sum
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -40,13 +40,15 @@ class OrderViewSet(viewsets.ModelViewSet):
         data = serializer.validated_data
 
         product = data['product']
+        product_quantity = data['product_quantity']
 
         total_price = 0
 
         if product:
             try:
                 product_id = product.id
-                total_price = Product.objects.get(id=product_id).price
+                product_price = Product.objects.get(id=product_id).price
+                total_price = product_price * product_quantity
             except Exception as e:
                 response = {'ERROR': f'에러가 발생하였습니다. {e}'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
@@ -62,3 +64,26 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer, total_price=None):
         serializer.save(total_price=total_price)
+
+
+class OrderSQLSumView(APIView):
+    def get(self, request):
+        pass
+
+
+class OrderORMSumView(APIView):
+    def get(self, request):
+        total_sales = Order.objects.filter(order_state="주문완료"). \
+            extra(select={'day': 'date(order_date)'}). \
+            values('day').order_by('day').\
+            annotate(day_total_sales=Sum('total_price'))
+
+        sales_per_product = Order.objects.filter(order_state="주문완료").\
+            extra(select={'day': 'date(order_date)'}).\
+            values('day', 'product_id').\
+            order_by('day').\
+            annotate(sales_quantity_per_product=Sum('product_quantity'), sales_per_product=Sum('total_price'))
+
+        data = total_sales, sales_per_product
+
+        return Response(data)
