@@ -66,14 +66,24 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.save(total_price=total_price)
 
 
+class OrderSQLSumView(APIView):
+    def get(self, request):
+        pass
+
+
 class OrderORMSumView(APIView):
     def get(self, request):
-        total_sales = Order.objects.filter(order_state="주문완료").aggregate(total_sales=Sum('total_price'))
-        sales_quantity_per_product = Order.objects.filter(order_state="주문완료").values('product_id')\
-            .annotate(sales_quantity_per_product=Sum('product_quantity'))
-        sales_per_product = Order.objects.filter(order_state="주문완료").values('product_id')\
-            .annotate(sales_per_product=Sum('total_price'))
+        total_sales = Order.objects.filter(order_state="주문완료"). \
+            extra(select={'day': 'date(order_date)'}). \
+            values('day').order_by('day').\
+            annotate(day_total_sales=Sum('total_price'))
 
-        data = [total_sales, sales_quantity_per_product, sales_per_product]
+        sales_per_product = Order.objects.filter(order_state="주문완료").\
+            extra(select={'day': 'date(order_date)'}).\
+            values('day', 'product_id').\
+            order_by('day').\
+            annotate(sales_quantity_per_product=Sum('product_quantity'), sales_per_product=Sum('total_price'))
+
+        data = total_sales, sales_per_product
 
         return Response(data)
