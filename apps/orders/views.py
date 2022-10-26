@@ -8,6 +8,16 @@ from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
 from apps.products.models import Product
 
 from django.db.models import Sum
+from django.db import connection
+
+
+def dictfetchall(cursor):
+    """Return all rows from a cursor as a dict"""
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -68,8 +78,72 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class OrderSQLSumView(APIView):
+
     def get(self, request):
-        pass
+        """
+        일자별 총 매출 SQL :
+
+        SELECT (date("order".order_date)) AS day, SUM("order".total_price) AS day_total_sales
+        FROM "order"
+        WHERE "order".order_state="주문완료"
+        GROUP BY day
+        ORDER BY day ASC
+
+
+        일자별 제품별 판매 수량 SQL:
+
+        SELECT (date(order_date)) AS day, "order".product_id,
+        SUM("order".product_quantity)  AS sales_quantity_per_product
+        FROM "order"
+        WHERE "order".order_state = "주문완료"
+        GROUP BY "order".product_id, day
+        ORDER BY day ASC
+
+        일자별 제품별 매출 SQL :
+
+        SELECT (date(order_date)) AS day, "order"."product_id", SUM("order"."total_price") AS sales_per_product
+        FROM "order"
+        WHERE "order"."order_state" = "주문완료"
+        GROUP BY "order"."product_id", day
+        ORDER BY "day" ASC
+        """
+
+        total_sales_query = 'SELECT (date("order".order_date)) AS day, ' \
+                            'SUM("order".total_price) AS day_total_sales ' \
+                            'FROM "order" ' \
+                            'WHERE "order".order_state="주문완료" ' \
+                            'GROUP BY day ' \
+                            'ORDER BY day ASC'
+
+        sales_quantity_per_product_query = 'SELECT (date(order_date)) AS day, ' \
+                                           '"order".product_id, SUM("order".product_quantity)  ' \
+                                           'AS sales_quantity_per_product ' \
+                                           'FROM "order" ' \
+                                           'WHERE "order".order_state = "주문완료" ' \
+                                           'GROUP BY "order".product_id, day ' \
+                                           'ORDER BY day ASC'
+
+        sales_per_product_query = 'SELECT (date(order_date)) AS day, ' \
+                                  '"order"."product_id", ' \
+                                  'SUM("order"."total_price") AS sales_per_product ' \
+                                  'FROM "order" ' \
+                                  'WHERE "order"."order_state" = "주문완료" ' \
+                                  'GROUP BY "order"."product_id", day ' \
+                                  'ORDER BY "day" ASC'
+
+        cursor = connection.cursor()
+        result = cursor.execute(total_sales_query)
+        day_total_sales = dictfetchall(cursor)
+
+        result = cursor.execute(sales_quantity_per_product_query)
+        sales_quantity_per_product = dictfetchall(cursor)
+
+        result = cursor.execute(sales_per_product_query)
+        sales_per_product = dictfetchall(cursor)
+
+        data = day_total_sales, sales_quantity_per_product, sales_per_product
+
+        return Response(data)
 
 
 class OrderORMSumView(APIView):
