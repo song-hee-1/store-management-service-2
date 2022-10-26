@@ -73,13 +73,14 @@ class OrderSQLSumView(APIView):
 
 class OrderORMSumView(APIView):
     def get(self, request):
-        total_sales = Order.objects.filter(order_state="주문완료"). \
-            extra(select={'day': 'date(order_date)'}). \
-            values('day').order_by('day').\
+        order_per_date = Order.objects.filter(order_state="주문완료").extra(select={'day': 'date(order_date)'})
+
+        total_sales = order_per_date.\
+            values('day').\
+            order_by('day').\
             annotate(day_total_sales=Sum('total_price'))
 
-        sales_per_product = Order.objects.filter(order_state="주문완료").\
-            extra(select={'day': 'date(order_date)'}).\
+        sales_per_product = order_per_date.\
             values('day', 'product_id').\
             order_by('day').\
             annotate(sales_quantity_per_product=Sum('product_quantity'), sales_per_product=Sum('total_price'))
