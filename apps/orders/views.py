@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderCreateSerializer, OrderListSerializer
@@ -72,6 +73,9 @@ class OrderSQLSumView(APIView):
 
 
 class OrderORMSumView(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'orders/summary_index.html'
+
     def get(self, request):
         order_per_date = Order.objects.filter(order_state="주문완료").extra(select={'day': 'date(order_date)'})
 
@@ -85,6 +89,4 @@ class OrderORMSumView(APIView):
             order_by('day').\
             annotate(sales_quantity_per_product=Sum('product_quantity'), sales_per_product=Sum('total_price'))
 
-        data = total_sales, sales_per_product
-
-        return Response(data)
+        return Response({'total_sales': total_sales, 'sales_per_product': sales_per_product})
