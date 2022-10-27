@@ -28,7 +28,7 @@ class CartItemSimpleSerializer(serializers.ModelSerializer):
         return CartItem.quantity * CartItem.product.price
 
 
-class CartSerializer(serializers.ModelSerializer):
+class CartListSerializer(serializers.ModelSerializer):
     items = CartItemSimpleSerializer(many=True)
     cart_total = serializers.SerializerMethodField()
 
@@ -40,3 +40,11 @@ class CartSerializer(serializers.ModelSerializer):
         items = Cart.items.all()
         total = sum([item.quantity * item.product.price for item in items])
         return total
+
+
+class CartCreateSerializer(serializers.ModelSerializer):
+    user_id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Cart
+        fields = '__all__'
