@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from apps.products.models import Product
 from apps.accounts.models import User
-from apps.orders.models import Order, OrderItem
+from apps.orders.models import Order
 
 
 class OrderViewSetTest(APITestCase):
@@ -35,13 +35,9 @@ class OrderViewSetTest(APITestCase):
             address="핑핑군 핑핑면 핑핑리",
             receiver_name="핑핑",
             receiver_phone_number="010-0000-0001",
-            user=self.user
-        )
-
-        OrderItem.objects.create(
-            quantity=1,
-            order_id=self.order.id,
-            product_id=self.product.id
+            user=self.user,
+            product=self.product,
+            product_quantity=1
         )
 
     def test_order_delete_fail(self):
@@ -51,6 +47,6 @@ class OrderViewSetTest(APITestCase):
     def test_order_get_retrieve_product_info(self):
         response = self.client.get(reverse('order-detail', kwargs={'pk': 1}))
         self.assertEquals(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['items'][0]['product']['id'] == 1)
-        self.assertTrue(response.data['items'][0]['product']['name'] == "알짜세트 4종")
-        self.assertTrue(response.data['items'][0]['product']['price'] == 28700)
+        self.assertTrue(response.data['product_info']['id'] == 1)
+        self.assertTrue(response.data['product_info']['name'] == "알짜세트 4종")
+        self.assertTrue(response.data['product_info']['price'] == 28700)
