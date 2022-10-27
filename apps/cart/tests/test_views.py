@@ -63,7 +63,7 @@ class CartViewSetTest(APITestCase):
         response = self.client.patch(reverse('cart-detail', kwargs={'pk': 1}), update_data)
         self.assertEquals(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_cart_update_fail(self):
+    def test_cart_delete_fail(self):
         response = self.client.delete(reverse('cart-detail', kwargs={'pk': 1}))
         self.assertEquals(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 

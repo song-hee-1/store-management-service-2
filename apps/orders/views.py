@@ -45,36 +45,36 @@ class OrderViewSet(viewsets.ModelViewSet):
         else:
             return OrderListSerializer
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = serializer.validated_data
-
-        product = data['product']
-        product_quantity = data['product_quantity']
-
-        total_price = 0
-
-        if product:
-            try:
-                product_id = product.id
-                product_price = Product.objects.get(id=product_id).price
-                total_price = product_price * product_quantity
-            except Exception as e:
-                response = {'ERROR': f'에러가 발생하였습니다. {e}'}
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
-        self.perform_create(serializer, total_price)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    # def create(self, request):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     data = serializer.validated_data
+    #
+    #     product = data['product']
+    #     product_quantity = data['product_quantity']
+    #
+    #     total_price = 0
+    #
+    #     if product:
+    #         try:
+    #             product_id = product.id
+    #             product_price = Product.objects.get(id=product_id).price
+    #             total_price = product_price * product_quantity
+    #         except Exception as e:
+    #             response = {'ERROR': f'에러가 발생하였습니다. {e}'}
+    #             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    #
+    #     self.perform_create(serializer, total_price)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def destroy(self, request, pk=None):
         """ DELETE 메소드는 허용하지 않습니다. """
         response = {'ERROR': 'DELETE 메소드는 허용하지 않습니다.'}
         return Response(response, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def perform_create(self, serializer, total_price=None):
-        serializer.save(total_price=total_price)
+    # def perform_create(self, serializer, total_price=None):
+    #     serializer.save(total_price=total_price)
 
 
 class OrderSQLSumView(APIView):
