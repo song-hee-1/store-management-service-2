@@ -200,8 +200,9 @@ URL|Method|Action|Description|
 |api/products/int:pk|PATCH|Partial_Update|상품 세부내역 부분 업데이트|
 |api/products/int:pk|DELETE|Delete|상품 삭제|
 
+</br>
 
-
+- [API 명세서](https://documenter.getpostman.com/view/21842492/2s8YK4rSnc)
 
 
 
