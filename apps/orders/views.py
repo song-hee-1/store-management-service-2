@@ -68,6 +68,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def update(self, request, pk=None):
+        """ UPDATE 메소드는 허용하지 않습니다. """
+        response = {'ERROR': 'UPDATE 메소드는 허용하지 않습니다.'}
+        return Response(response, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
     def destroy(self, request, pk=None):
         """ DELETE 메소드는 허용하지 않습니다. """
         response = {'ERROR': 'DELETE 메소드는 허용하지 않습니다.'}
