@@ -11,7 +11,7 @@ class Cart(models.Model):
         db_table = 'cart'
 
     def __str__(self):
-        return self.user
+        return str(self.user)
 
 
 class CartItem(models.Model):
@@ -28,4 +28,4 @@ class CartItem(models.Model):
         db_table = 'cartitem'
 
     def __str__(self):
-        return {self.cart, self.product}
+        return str(self.cart)
