@@ -74,6 +74,10 @@ Framework, Dj Rest Auth, Django Allauth, Djangorestframework Simplejwt
 ![image](https://user-images.githubusercontent.com/83492367/198281536-62661b1a-66fa-4bfb-8bcf-5b9051c24345.png)
 
 
+**Test Coverage : 87 %**
+![image](https://user-images.githubusercontent.com/83492367/198308477-d1176808-e507-4b92-9276-11cb668bb3fa.png)
+
+
 - 유저(3) : 
 	- `username`으로 로그인 시 실패하는 테스트
 	-  `email`로 로그인 시 성공하는 테스트
@@ -89,10 +93,7 @@ Framework, Dj Rest Auth, Django Allauth, Djangorestframework Simplejwt
 
 - 상품(5)
 	- ProductViewSet CRRUD 확인하는 테스트
-
-
-
-
+	
 
 </br>
 
@@ -132,8 +133,8 @@ Framework, Dj Rest Auth, Django Allauth, Djangorestframework Simplejwt
 
 ### accounts - Dj Rest Auth
 
-URL|Method|Action|Description|
-|------|---|---|---|
+URL|Method|Description|
+|------|---|---|
 |api/accounts/password/reset|POST|이메일을 통한 사용자 비밀번호 재설정|
 |api/accounts/password/reset/confirm|POST|사용자 비밀번호 재설정 및 새로운 토큰 발급|
 |api/accounts/password/change|POST|기존 비밀번호를 통해 비밀번호 재설정|
