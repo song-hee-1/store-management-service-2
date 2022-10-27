@@ -10,9 +10,9 @@ class Order(models.Model):
 
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE, db_column='user_id',
                              related_name='order')
-    # product = models.ForeignKey("products.Product", on_delete=models.CASCADE, db_column='product_id',
-    #                             related_name='order_product')
-    # product_quantity = models.PositiveIntegerField(default=1, verbose_name='상품 주문 수량')
+    product = models.ForeignKey("products.Product", on_delete=models.CASCADE, db_column='product_id',
+                                related_name='order_product', null=True)
+    product_quantity = models.PositiveIntegerField(default=1, verbose_name='상품 주문 수량')
     address = models.CharField(max_length=255, verbose_name="주소")
     receiver_name = models.CharField(max_length=40, verbose_name="수령자이름")
     phoneNumberRegex = RegexValidator(regex=r'^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$')
@@ -29,25 +29,3 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.id)
-
-
-class OrderItem(models.Model):
-    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="items", null=True)
-    product = models.ForeignKey("products.Product", on_delete=models.CASCADE, null=True,
-                                related_name='orderitems')
-    quantity = models.PositiveIntegerField(default=0)
-    sub_total_price = models.PositiveIntegerField(null=True, verbose_name="주문 상품 가격")
-    create_at = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def get_sub_total_price(self):
-        total = self.product.price * self.quantity
-        return total
-
-    class Meta:
-        verbose_name = "주문 상품"
-        verbose_name_plural = "주문 상품 목록"
-        db_table = 'orderitem'
-
-    def __str__(self):
-        return str(self.order)
