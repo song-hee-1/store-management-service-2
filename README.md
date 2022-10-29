@@ -44,7 +44,8 @@
 
 - **Back-End** : Python, Django, Django REST
 Framework, Dj Rest Auth, Django Allauth, Djangorestframework Simplejwt
-- **Database** : SQLite
+- **Database** : SQLite, PostgreSQL
+- **Cloud** : Azure
 - **ETC** : Git, Github
 
 </br>
@@ -204,7 +205,15 @@ URL|Method|Action|Description|
 
 - [API 명세서](https://documenter.getpostman.com/view/21842492/2s8YK4rSnc)
 
+- 배포
 
+	- 서버의 유연성 위해 Azure database for postgresql flexible server 이용하여 구현 및 배포
+
+	- 현재는 비용 및 보안 상의 이유로 배포 중단
+
+	- 배포 화면 ![image](https://user-images.githubusercontent.com/83492367/198835911-7c0d12d5-bc80-48ef-a581-1f6af80c9ec4.png)
+
+	
 
 </br>
 
