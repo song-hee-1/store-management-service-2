@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
-# import json
+import json
 from pathlib import Path
 from datetime import timedelta
 
-# from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,25 +24,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# secret_file = os.path.join(BASE_DIR, 'secrets.json')  # secret key 관리를 위한 secrets.json 파일 위치
+secret_file = os.path.join(BASE_DIR, 'secrets.json')  # secret key 관리를 위한 secrets.json 파일 위치
 
-# with open(secret_file) as f:
-#     secrets = json.loads(f.read())
-
-
-# def os.environ[setting)]
-#     """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
-#     try:
-#         return secrets[setting]
-#     except KeyError:
-#         error_msg = "Set the {} environment variable".format(setting)
-#         raise ImproperlyConfigured(error_msg)
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
 
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+def get_secret(setting):
+    """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -64,7 +64,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'corsheaders',
-
+    'debug_toolbar',
+    
     # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -111,6 +112,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -148,11 +150,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ["DBNAME"],
-        'HOST': os.environ["DBHOST"],
-        'USER': os.environ["DBUSER"],
-        'PASSWORD': os.environ["DBPASS"]
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -208,3 +207,7 @@ AUTH_USER_MODEL = 'accounts.User'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
