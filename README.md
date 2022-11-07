@@ -23,7 +23,11 @@
 </br>
 
 ## 개발 기간
-**2022.10.21 ~ 2022.10.27** 
+**2022.10.21 ~ 2022.10.27** : 기능 구현
+
+**2022.10.29** : Azure 배포
+
+**2022.11.7** : AWS EC2 배포
 
 </br>
 </br>
@@ -207,11 +211,13 @@ URL|Method|Action|Description|
 
 - 배포
 
-	- 서버의 유연성 위해 Azure database for postgresql flexible server 이용하여 구현 및 배포
+	- 서버의 유연성 위해 `Azure database for postgresql flexible server(Azure)` 및 `Amazon Elastic Compute Cloud(Amazon EC2)` 이용하여 구현 및 배포
 
 	- 현재는 비용 및 보안 상의 이유로 배포 중단
 
-	- 배포 화면 ![image](https://user-images.githubusercontent.com/83492367/198835911-7c0d12d5-bc80-48ef-a581-1f6af80c9ec4.png)
+	- Azure 배포 화면 ![image](https://user-images.githubusercontent.com/83492367/198835911-7c0d12d5-bc80-48ef-a581-1f6af80c9ec4.png)
+	
+	- Amazon EC2 배포 화면 ![image](https://user-images.githubusercontent.com/83492367/200237515-ce04cea6-b5eb-4c7d-9af7-7872ef3a48c3.png)
 
 	
 
